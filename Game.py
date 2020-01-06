@@ -28,8 +28,30 @@ def spot_check(board, row, col):
 	else:
 		return False
 
+def win(board, c):
+	#rows
+	if board[0][0]==c and board[0][1]==c and board[0][2]==c:
+		return True
+	if board[1][0]==c and board[1][1]==c and board[1][2]==c:
+		return True
+	if board[2][0]==c and board[2][1]==c and board[2][2]==c:
+		return True
+	#columns
+	if board[0][0]==c and board[1][0]==c and board[2][0]==c:
+		return True
+	if board[0][1]==c and board[1][1]==c and board[2][1]==c:
+		return True
+	if board[0][2]==c and board[1][2]==c and board[2][2]==c:
+		return True
+	#diagonals
+	if board[0][0]==c and board[1][1]==c and board[2][2]==c:
+		return True
+	if board[0][2]==c and board[1][1]==c and board[2][0]==c:
+		return True
+	return False
 
-def player_move(board):
+
+def player_move(w, board):
 	print('--Your move--')
 	turn=0
 	while turn==0:
@@ -40,9 +62,13 @@ def player_move(board):
 			turn=1
 		else:
 			print("Spot taken.")
+	if win(board, 'X'):
+		disp(w, board)
+		print('Player wins!')
+		exit()
 	return board
 
-def computer_move(board):
+def computer_move(w, board):
 	print('--Computer move--')
 	turn=0
 	while turn==0:
@@ -51,6 +77,10 @@ def computer_move(board):
 		if spot_check(board, row, col): #if spot not taken
 			board[row-1][col-1]='O'
 			turn=1
+	if win(board, 'O'):
+		disp(w, board)
+		print('Computer wins!')
+		exit()
 	return board
 
 
@@ -59,26 +89,12 @@ def solve(r, w):
 	board=[['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
 	#display
 	disp(w, board)
-	win=0
+	
+	while 1==1:
+		player_move(w, board)
+		disp(w, board)
 
-	player_move(board)
-	disp(w, board)
+		computer_move(w, board)
+		disp(w, board)
 
-	computer_move(board)
-	disp(w, board)
-
-	player_move(board)
-	disp(w, board)
-
-	#while win==0:
-		#player moves
-
-
-		#display
-
-
-		#computer moves
-
-
-		#display
 
