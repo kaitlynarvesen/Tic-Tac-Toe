@@ -32,6 +32,18 @@ def input_check_col(i):
 		print('Invalid input.')
 		return input_check_col(input('Column: '))
 
+#check if user input for column is valid (int 1-3)
+def input_check_skill(i):
+	try:
+		n=int(i)
+	except:
+		n=0 #invalid
+	if n==1 or n==2 or n==3:
+		return n
+	else:
+		print('Invalid input.')
+		return input_check_skill(input('Choose computer skill level (1-3): '))
+
 #check if a spot is taken or not
 def spot_check(board, row, col):
 	if board[row-1][col-1]=='_':
@@ -62,6 +74,7 @@ def win(board, c):
 		return True
 	return False
 
+#option to play again or exit
 def end(w):
 	again=input('\nPlay again? (Y/N): ')
 	if again=='Y' or again=='y' or again=='Yes' or again=='yes':
@@ -84,12 +97,12 @@ def player_move(w, board):
 	#check for win
 	if win(board, 'X'):
 		disp(w, board)
-		print('Player wins!')
+		print('You win!')
 		end(w)
 	return board
 
-#computer turn
-def computer_move(w, board):
+#computer turn: skill level 1
+def computer_move_1(w, board):
 	print('--Computer move--')
 	turn=0
 	while turn==0:
@@ -101,7 +114,41 @@ def computer_move(w, board):
 	#check for win
 	if win(board, 'O'):
 		disp(w, board)
-		print('Computer wins!')
+		print('Computer wins.')
+		end(w)
+	return board
+
+#computer turn: skill level 2
+def computer_move_2(w, board):
+	print('--Computer move--')
+	turn=0
+	while turn==0:
+		row=random.randint(1, 3)
+		col=random.randint(1, 3)
+		if spot_check(board, row, col): #if spot not taken
+			board[row-1][col-1]='O'
+			turn=1
+	#check for win
+	if win(board, 'O'):
+		disp(w, board)
+		print('Computer wins.')
+		end(w)
+	return board
+
+#computer turn: skill level 3
+def computer_move_3(w, board):
+	print('--Computer move--')
+	turn=0
+	while turn==0:
+		row=random.randint(1, 3)
+		col=random.randint(1, 3)
+		if spot_check(board, row, col): #if spot not taken
+			board[row-1][col-1]='O'
+			turn=1
+	#check for win
+	if win(board, 'O'):
+		disp(w, board)
+		print('Computer wins.')
 		end(w)
 	return board
 
@@ -122,6 +169,9 @@ def solve(w):
 	#initialize board
 	board=[['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
 
+	#set computer skill level
+	skill=input_check_skill(input('Choose computer skill level (1-3): '))
+
 	#determine if player or computer goes first by guessing a number from 1-100
 	#whoever is closer to a random number from 1-100 goes first
 	ans=random.randint(1, 100)
@@ -132,14 +182,14 @@ def solve(w):
 		print('Tie!')
 		solve()
 	if abs(ans-player)<abs(ans-computer):
-		print('Player goes first!\n')
-		solve_player(w, board)
+		print('You go first!\n')
+		solve_player(w, board, skill)
 	else:
-		print('Computer goes first!\n')
-		solve_computer(w, board)
+		print('Computer goes first.\n')
+		solve_computer(w, board, skill)
 
 #used if player goes first
-def solve_player(w, board):
+def solve_player(w, board, skill):
 	disp(w, board)
 
 	player_move(w, board)
@@ -148,7 +198,12 @@ def solve_player(w, board):
 	#play until someone wins or the board is full
 	count=0
 	while count<4:
-		computer_move(w, board)
+		if skill==1:
+			computer_move_1(w, board)
+		if skill==2:
+			computer_move_2(w, board)
+		else:
+			computer_move_3(w, board)
 		disp(w, board)
 
 		player_move(w, board)
@@ -159,8 +214,13 @@ def solve_player(w, board):
 	end(w)
 
 #used if computer goes first
-def solve_computer(w, board):
-	computer_move(w, board)
+def solve_computer(w, board, skill):
+	if skill==1:
+		computer_move_1(w, board)
+	if skill==2:
+		computer_move_2(w, board)
+	else:
+		computer_move_3(w, board)
 	disp(w, board)
 
 	#play until someone wins or the board is full
@@ -169,7 +229,12 @@ def solve_computer(w, board):
 		player_move(w, board)
 		disp(w, board)
 
-		computer_move(w, board)
+		if skill==1:
+			computer_move_1(w, board)
+		if skill==2:
+			computer_move_2(w, board)
+		else:
+			computer_move_3(w, board)
 		disp(w, board)
 
 		count+=1
