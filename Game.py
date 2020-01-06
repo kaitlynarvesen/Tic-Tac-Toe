@@ -8,8 +8,8 @@ def disp(w, board):
 		w.write('\n')
 	w.write('\n')
 
-#check if user input for row or column is valid (int 1-3)
-def input_check(i):
+#check if user input for row is valid (int 1-3)
+def input_check_row(i):
 	try:
 		n=int(i)
 	except:
@@ -18,7 +18,19 @@ def input_check(i):
 		return n
 	else:
 		print('Invalid input.')
-		return input_check(input('Row: '))
+		return input_check_row(input('Row: '))
+
+#check if user input for column is valid (int 1-3)
+def input_check_col(i):
+	try:
+		n=int(i)
+	except:
+		n=0 #invalid
+	if n==1 or n==2 or n==3:
+		return n
+	else:
+		print('Invalid input.')
+		return input_check_col(input('Column: '))
 
 #check if a spot is taken or not
 def spot_check(board, row, col):
@@ -55,8 +67,8 @@ def player_move(w, board):
 	print('--Your move--')
 	turn=0
 	while turn==0:
-		row=input_check(input('Row: '))
-		col=input_check(input('Column: '))
+		row=input_check_row(input('Row: '))
+		col=input_check_col(input('Column: '))
 		if spot_check(board, row, col): #if spot not taken
 			board[row-1][col-1]='X'
 			turn=1
@@ -138,7 +150,6 @@ def solve_player(r, w, board):
 		count+=1
 	print('Tie!')
 	exit()
-
 
 #used if computer goes first
 def solve_computer(r, w, board):
