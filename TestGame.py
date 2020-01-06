@@ -12,8 +12,8 @@ class TestGame(TestCase):
 
 	def test_disp_1(self):
 		w=StringIO()
-		board=[[0, 0, 0], [0, 0, 0], [0, 0, 0]]
-		ans='[0, 0, 0]\n[0, 0, 0]\n[0, 0, 0]\n'
+		board=[['0', '0', '0'], ['0', '0', '0'], ['0', '0', '0']]
+		ans='0 0 0 \n0 0 0 \n0 0 0 \n\n'
 		run=disp(w, board)
 		self.assertEqual(ans, w.getvalue())
 
