@@ -62,6 +62,13 @@ def win(board, c):
 		return True
 	return False
 
+def end(w):
+	again=input('\nPlay again? (Y/N): ')
+	if again=='Y' or again=='y' or again=='Yes' or again=='yes':
+		solve(w)
+	else:
+		exit()
+
 #player turn
 def player_move(w, board):
 	print('--Your move--')
@@ -78,7 +85,7 @@ def player_move(w, board):
 	if win(board, 'X'):
 		disp(w, board)
 		print('Player wins!')
-		exit()
+		end(w)
 	return board
 
 #computer turn
@@ -95,7 +102,7 @@ def computer_move(w, board):
 	if win(board, 'O'):
 		disp(w, board)
 		print('Computer wins!')
-		exit()
+		end(w)
 	return board
 
 #check if the input for the first move guess is valid (int 1-100)
@@ -111,7 +118,7 @@ def first_check(i):
 		return first_check(input('Choose a number from 1-100 (inclusive): '))
 
 #plays the game
-def solve(r, w):
+def solve(w):
 	#initialize board
 	board=[['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
 
@@ -126,13 +133,13 @@ def solve(r, w):
 		solve()
 	if abs(ans-player)<abs(ans-computer):
 		print('Player goes first!\n')
-		solve_player(r, w, board)
+		solve_player(w, board)
 	else:
 		print('Computer goes first!\n')
-		solve_computer(r, w, board)
+		solve_computer(w, board)
 
 #used if player goes first
-def solve_player(r, w, board):
+def solve_player(w, board):
 	disp(w, board)
 
 	player_move(w, board)
@@ -149,10 +156,10 @@ def solve_player(r, w, board):
 
 		count+=1
 	print('Tie!')
-	exit()
+	end(w)
 
 #used if computer goes first
-def solve_computer(r, w, board):
+def solve_computer(w, board):
 	computer_move(w, board)
 	disp(w, board)
 
@@ -167,5 +174,5 @@ def solve_computer(r, w, board):
 
 		count+=1
 	print('Tie!')
-	exit()
+	end(w)
 
