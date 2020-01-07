@@ -82,6 +82,59 @@ def end(w):
 	else:
 		exit()
 
+#returns a list of tuples (row, col) of all the free spots on the board
+def free_spaces(board):
+	ans=[]
+	for r in range(1, 4):
+		for c in range(1, 4):
+			if spot_check(board, r, c):
+				ans.append((r-1, c-1))
+	return ans
+
+#executes minimax algorithm to find the best move
+def minimax(board, computer_turn):
+	free=free_spaces(board)
+
+	#if game over
+	if win(board, 'O'):
+		return 1
+	if win(board, 'X'):
+		return -1
+	if len(free)<1:
+		return 0
+
+	if computer_turn:
+		best=-1000
+		for f in free:
+			board2=[row.copy() for row in board]
+			board2[f[0]][f[1]]='O'
+			val=minimax(board2, False)
+			best=max(best, val)
+		return best
+
+	else:
+		best=1000
+		for f in free:
+			board2=[row.copy() for row in board]
+			board2[f[0]][f[1]]='X'
+			val=minimax(board2, True)
+			best=min(best, val)
+		return best
+
+#finds the computer the best move using the minimax function
+def findBestMove(board):
+	best=-1000
+	free=free_spaces(board)
+	move=None
+
+	for f in free:
+		board2=[row.copy() for row in board]
+		board2[f[0]][f[1]]='O'
+		if minimax(board2, False)>best:
+			best=minimax(board2, False)
+			move=f
+	return move
+
 #player turn
 def player_move(w, board):
 	print('--Your move--')
@@ -101,7 +154,7 @@ def player_move(w, board):
 		end(w)
 	return board
 
-#computer turn: skill level 1
+#computer turn: skill level 1 (random)
 def computer_move_1(w, board):
 	print('--Computer move--')
 	turn=0
@@ -138,13 +191,14 @@ def computer_move_2(w, board):
 #computer turn: skill level 3
 def computer_move_3(w, board):
 	print('--Computer move--')
-	turn=0
-	while turn==0:
-		row=random.randint(1, 3)
-		col=random.randint(1, 3)
-		if spot_check(board, row, col): #if spot not taken
-			board[row-1][col-1]='O'
-			turn=1
+
+	board2=[row.copy() for row in board]
+	move=findBestMove(board2)
+	print(move)
+
+	row=move[0]
+	col=move[1]
+	board[row][col]='O'
 	#check for win
 	if win(board, 'O'):
 		disp(w, board)
@@ -202,7 +256,7 @@ def solve_player(w, board, skill):
 			computer_move_1(w, board)
 		if skill==2:
 			computer_move_2(w, board)
-		else:
+		if skill==3:
 			computer_move_3(w, board)
 		disp(w, board)
 
@@ -219,7 +273,7 @@ def solve_computer(w, board, skill):
 		computer_move_1(w, board)
 	if skill==2:
 		computer_move_2(w, board)
-	else:
+	if skill==3:
 		computer_move_3(w, board)
 	disp(w, board)
 
@@ -233,11 +287,14 @@ def solve_computer(w, board, skill):
 			computer_move_1(w, board)
 		if skill==2:
 			computer_move_2(w, board)
-		else:
+		if skill ==3:
 			computer_move_3(w, board)
 		disp(w, board)
 
 		count+=1
 	print('Tie!')
 	end(w)
+
+
+
 
