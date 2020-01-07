@@ -172,23 +172,35 @@ def computer_move_1(w, board):
 	return board
 
 #computer turn: skill level 2
+#if computer can win on next turn: go there
+#if player can win on next turn: block them
+#otherwise: random
 def computer_move_2(w, board):
-	print('--Computer move--')
-	turn=0
-	while turn==0:
-		row=random.randint(1, 3)
-		col=random.randint(1, 3)
-		if spot_check(board, row, col): #if spot not taken
-			board[row-1][col-1]='O'
-			turn=1
-	#check for win
-	if win(board, 'O'):
-		disp(w, board)
-		print('Computer wins.')
-		end(w)
-	return board
+	free=free_spaces(board)
+
+	#if computer can win on this turn
+	for f in free:
+		board2=[row.copy() for row in board]
+		board2[f[0]][f[1]]='O'
+		if win(board2, 'O'):
+			print('--Computer move--')
+			disp(w, board2)
+			print('Computer wins.')
+			end(w)
+	#if player can win on next turn
+	for f in free:
+		board2=[row.copy() for row in board]
+		board2[f[0]][f[1]]='X'
+		if win(board2, 'X'):
+			print('--Computer move--')
+			board[f[0]][f[1]]='O'
+			return board
+	#otherwise: random
+	computer_move_1(w, board)
 
 #computer turn: skill level 3
+#uses minimax algorithm to find best possible move
+#calculates all remaining possibilities and assumes player uses best moves
 def computer_move_3(w, board):
 	print('--Computer move--')
 
@@ -294,7 +306,3 @@ def solve_computer(w, board, skill):
 		count+=1
 	print('Tie!')
 	end(w)
-
-
-
-
