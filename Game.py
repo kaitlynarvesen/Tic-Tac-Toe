@@ -51,6 +51,16 @@ def spot_check(board, row, col):
 	else:
 		return False
 
+#check if user input for row is valid (int 1-3)
+def input_check_player(i):
+	if i=='1' or i=='one' or i=='One':
+		return 1
+	if i=='2' or i=='two' or i=='Two':
+		return 2
+	else:
+		print('Invalid input.')
+		return input_check_player(input('One-player or two-player? (enter 1 or 2): '))
+
 #check if the board is in a winning configuration
 def win(board, c):
 	#rows
@@ -230,8 +240,8 @@ def first_check(i):
 		print('Invalid input.')
 		return first_check(input('Choose a number from 1-100 (inclusive): '))
 
-#plays the game
-def solve(w):
+#player vs computer
+def solve_one(w):
 	#initialize board
 	board=[['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
 
@@ -306,3 +316,124 @@ def solve_computer(w, board, skill):
 		count+=1
 	print('Tie!')
 	end(w)
+
+
+#---------additional functions for two player--------------------
+
+#player 1 vs player 2
+def solve_two(w, p1, p2):
+	#initialize board
+	board=[['_', '_', '_'], ['_', '_', '_'], ['_', '_', '_']]
+
+	#determine if player or computer goes first by guessing a number from 1-100
+	#whoever is closer to a random number from 1-100 goes first
+	ans=random.randint(1, 100)
+	guess1=first_check(input('\n'+p1+' choose a number from 1-100 (inclusive): '))
+	guess2=first_check(input('\n'+p2+' choose a number from 1-100 (inclusive): '))
+	print('\nAnswer: '+str(ans)+', '+p1+'\'s guess: '+str(guess1)+', '+p2+'\'s guess: '+str(guess2))
+	if abs(ans-guess1)==abs(ans-guess2):
+		print('Tie!')
+		solve_two()
+	if abs(ans-guess1)<abs(ans-guess2):
+		print(p1+' goes first!\n')
+		solve_player_1(w, board, p1, p2)
+	else:
+		print(p2+' goes first!\n')
+		solve_player_2(w, board, p1, p2)
+
+#used if player goes first
+def solve_player_1(w, board, p1, p2):
+	disp(w, board)
+
+	player_move_1(w, board, p1, p2)
+	disp(w, board)
+
+	#play until someone wins or the board is full
+	count=0
+	while count<4:
+		player_move_2(w, board, p1, p2)
+		disp(w, board)
+
+		player_move_1(w, board, p1, p2)
+		disp(w, board)
+
+		count+=1
+	print('Tie!')
+	end_2(w, p1, p2)
+
+#used if computer goes first
+def solve_player_2(w, board, p1, p2):
+	disp(w, board)
+
+	player_move_2(w, board, p1, p2)
+	disp(w, board)
+
+	#play until someone wins or the board is full
+	count=0
+	while count<4:
+		player_move_1(w, board, p1, p2)
+		disp(w, board)
+
+		player_move_2(w, board, p1, p2)
+		disp(w, board)
+
+		count+=1
+	print('Tie!')
+	end_2(w, p1, p2, p1, p2)
+
+#player 1 turn
+def player_move_1(w, board, p1, p2):
+	print('--'+p1+'\'s move [X]--')
+	turn=0
+	while turn==0:
+		row=input_check_row(input('Row: '))
+		col=input_check_col(input('Column: '))
+		if spot_check(board, row, col): #if spot not taken
+			board[row-1][col-1]='X'
+			turn=1
+		else:
+			print("Spot taken.")
+	#check for win
+	if win(board, 'X'):
+		disp(w, board)
+		print(p1+' wins!')
+		end_2(w, p1, p2)
+	return board
+
+#player 2 turn
+def player_move_2(w, board, p1, p2):
+	print('--'+p2+'\'s move [O]--')
+	turn=0
+	while turn==0:
+		row=input_check_row(input('Row: '))
+		col=input_check_col(input('Column: '))
+		if spot_check(board, row, col): #if spot not taken
+			board[row-1][col-1]='O'
+			turn=1
+		else:
+			print("Spot taken.")
+	#check for win
+	if win(board, 'O'):
+		disp(w, board)
+		print(p2+' wins!')
+		end_2(w, p1, p2)
+	return board
+
+#option to play again or exit
+def end_2(w, p1, p2):
+	again=input('\nPlay again? (Y/N): ')
+	if again=='Y' or again=='y' or again=='Yes' or again=='yes':
+		solve_two(w, p1, p2)
+	else:
+		exit()
+
+#-----------------------------------------------------------------
+
+def solve(w):
+	mode=input_check_player(input('One-player or two-player? (enter 1 or 2): '))
+	if mode==2:
+		p1=input('Enter player 1 name: ')
+		p2=input('Enter player 2 name: ')
+		solve_two(w, p1, p2)
+	else:
+		solve_one(w)
